@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "target": "ES6", // Set the output JavaScript version (ES6 for modern features)
+    "module": "ESNext", // Use ES module system
+    "outDir": "./dist", // Output directory for compiled code
+    "rootDir": "./src", // The root directory of your TypeScript files
+    "strict": true, // Enable strict type-checking options
+    "declaration": true, // Generates .d.ts files for type declaration
+    "esModuleInterop": true, // Allows default imports from CommonJS modules
+    "moduleResolution": "node", // Resolves modules the way Node.js does
+    "skipLibCheck": true, // Skip library checks to avoid unnecessary issues
+    "lib": ["es2017", "dom"] // Add es2017 to include the latest ECMAScript features
+  },
+  "include": ["src/**/*", "dist/types"], // Include all files in the src directory
+  "exclude": ["node_modules"] // Exclude node_modules
+}

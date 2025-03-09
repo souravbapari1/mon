@@ -1,0 +1,37 @@
+{
+  "name": "monpress",
+  "version": "0.0.38-beta",
+  "main": "dist/main.js",
+  "types": "dist/main.d.ts",
+  "type": "module",
+  "scripts": {
+    "build": "tsc"
+  },
+  "bin": {
+    "monpress": "dist/index.js"
+  },
+  "keywords": [
+    "express",
+    "tool"
+  ],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@types/express": "^5.0.0",
+    "chalk": "^5.4.1",
+    "chokidar": "^4.0.3",
+    "commander": "^13.1.0",
+    "degit": "^2.8.4",
+    "express": "^4.21.2",
+    "inquirer": "^12.4.2",
+    "ora": "^8.2.0",
+    "zod": "^3.24.2",
+    "zod-validation-error": "^3.4.0"
+  },
+  "devDependencies": {
+    "@types/degit": "^2.8.6",
+    "typescript": "^5.6.3"
+  },
+  "private": false
+}
