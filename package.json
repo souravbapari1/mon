@@ -1,6 +1,6 @@
 {
   "name": "monpress",
-  "version": "0.0.38-beta",
+  "version": "0.0.39-beta",
   "main": "dist/main.js",
   "types": "dist/main.d.ts",
   "type": "module",

@@ -1,16 +1,19 @@
 import express from "express";
 
-export type RequestType = {
-  params?: Record<string, any>;
-  query?: Record<string, any>;
-  body?: any;
-  headers?: Record<string, any>;
-  cookies?: Record<string, any>;
-  signedCookies?: Record<string, any>;
-  response?: any;
-};
+// Define allowed keys
+type AllowedKeys =
+  | "params"
+  | "query"
+  | "body"
+  | "headers"
+  | "cookies"
+  | "signedCookies"
+  | "response";
 
-export const httpRequest = <T extends RequestType>(
+// Ensure T only has the allowed keys
+export type REQ<T extends Partial<Record<AllowedKeys, any>>> = T;
+
+export const httpRequest = <T extends Partial<Record<AllowedKeys, any>>>(
   handler: (
     req: express.Request<T["params"], T["response"], T["body"], T["query"]> & {
       headers: T["headers"];

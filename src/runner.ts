@@ -135,15 +135,13 @@ const writeCode = (code: CODE[]) => {
 
   code.forEach((item, i) => {
     output += `
-//Route Group ${item.route} ${
-      item.isValid ? " ✅" : " ❌ invalid route path Not Allow On Run"
-    }
+//Route Group ${item.route} ${item.isValid ? " ✅" : " ❌ invalid route path Not Allow On Run"
+      }
 ${item.isValid ? "" : "//"}import * as routes${i} from '${item.import}'; 
 `;
     item.functionNames.forEach((func) => {
-      output += `${item.isValid ? "" : "//"}router.${func.toLowerCase()}("${
-        item.route
-      }", routes${i}.${func});\n`;
+      output += `${item.isValid ? "" : "//"}router.${func.toLowerCase()}("${item.route
+        }", routes${i}.${func});\n`;
     });
   });
 
