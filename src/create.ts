@@ -20,7 +20,6 @@ import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 
-const __dirname = path.dirname(__filename);
 
 export const createApp = async () => {
   console.log(chalk.bold.cyan("\nWelcome to create-monpress-app! 🚀\n"));

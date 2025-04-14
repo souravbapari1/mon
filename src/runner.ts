@@ -7,7 +7,7 @@ import path from "path";
 
 const routesPath = path.join(process.cwd(), "src", "routes");
 const importRoot = "@/src/routes";
-const ROUTE_METHODS = ["GET", "POST", "PUT", "PATCH", "DELETE"];
+const ROUTE_METHODS = ["get", "post", "put", "patch", "delete"];
 
 export interface CODE {
   import: string;
@@ -90,16 +90,24 @@ const extractAndValidateBracketsContent = (filePath: string) => {
 const getFunctionNamesFromFile = (filePath: string) => {
   try {
     const fileContent = fs.readFileSync(filePath, "utf8");
+
+    // Remove Comments
+    const uncommentedCode = fileContent
+      .split("\n")
+      .filter((line) => !line.trim().startsWith("//"))
+      .join("\n");
+
     const functionRegex = /export\s+(?:const|function|async function)\s+(\w+)/g;
 
     const functionNames = [];
     let match;
-    while ((match = functionRegex.exec(fileContent)) !== null) {
-      functionNames.push(match[1]);
+    // Get The Function Names Exports From The File
+    while ((match = functionRegex.exec(uncommentedCode)) !== null) {
+      functionNames.push(match[1].trim());
     }
 
     return functionNames.filter((name) =>
-      ROUTE_METHODS.includes(name.toUpperCase())
+      ROUTE_METHODS.includes(name.toLocaleLowerCase())
     );
   } catch (error) {
     console.error("Error reading file:", error);

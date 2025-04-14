@@ -1,102 +1,208 @@
+---
 # Monpress CLI
 
-Welcome to the Monpress CLI! This tool helps you create and manage Monpress projects with ease.
+Welcome to the **Monpress CLI**! This tool helps you create and manage Express-based Monpress projects with:
+  - ✅ File-based routing
+  - ✅ Built-in REST method handlers
+  - ✅ Global middleware support
+  - ✅ Fast and flexible development experience
+---
 
-## Installation
+## 📦 Installation
 
-To use the Monpress CLI, you need to have Node.js installed on your system. You can install the CLI globally using npm:
+Make sure you have [Node.js](https://nodejs.org/) installed.
+
+Install Monpress CLI globally via npm:
 
 ```sh
 npm install -g monpress
 ```
 
-## Usage
+---
 
-The Monpress CLI provides several commands to help you manage your projects. Here are the available commands:
+## 🚀 Usage
 
-### Create a New Project
+The Monpress CLI includes several commands to streamline your workflow:
 
-To create a new Monpress project, use the `create` command:
+### 🔧 Create a New Project
 
 ```sh
 monpress create
 ```
 
-You will be prompted to enter the project name and choose a package manager (npm, yarn, or pnpm).
+You'll be prompted to:
 
-### Start Development Server
+- Enter a project name
+- Choose a package manager (`npm`, `yarn`, or `pnpm`)
 
-To start the development server, use the `dev` command:
+---
+
+### 🧑‍💻 Start the Development Server
 
 ```sh
 monpress dev
 ```
 
-This will start the development server for your Monpress project.
+Launches your Monpress project in development mode with file-watching enabled.
 
-### Generate Routes
+---
 
-To generate routes for your project, use the `generate` command:
+### 🛠️ Generate Routes
 
 ```sh
 monpress generate
 ```
 
-This will generate the necessary routes for your Monpress project.
+Automatically generates route mappings from your file structure.
 
-## Example
+---
 
-Here is an example of how to use the Monpress CLI:
+## 📁 File-Based Routing
+
+Monpress uses the `routes/` directory to define routes via filenames. This system is inspired by modern frameworks like Next.js and SvelteKit.
+
+### 🧭 Route Mapping Example
+
+| File Path               | Route Path    |
+| ----------------------- | ------------- |
+| `routes/index.ts`       | `/`           |
+| `routes/about.ts`       | `/about`      |
+| `routes/contact.ts`     | `/contact`    |
+| `routes/blog.ts`        | `/blog`       |
+| `routes/blog/[blog].ts` | `/blog/:blog` |
+| `routes/user/[id_].ts`  | `/user/:id?`  |
+
+- `[]` denotes dynamic segments
+- `[_]` (trailing underscore) denotes optional segments
+
+---
+
+### 🧩 Route File Example (`routes/index.ts`)
+
+```ts
+import { httpRequest } from "monpress";
+
+export const GET = httpRequest(async (req, res) => {
+  res.json({ message: "GET request successful" });
+});
+
+export const POST = httpRequest(async (req, res) => {
+  res.json({ message: "POST request successful" });
+});
+
+export const PATCH = httpRequest(async (req, res) => {
+  res.json({ message: "PATCH request successful" });
+});
+
+export const PUT = httpRequest(async (req, res) => {
+  res.json({ message: "PUT request successful" });
+});
+
+export const DELETE = httpRequest(async (req, res) => {
+  res.json({ message: "DELETE request successful" });
+});
+```
+
+You can export any HTTP method handler (`GET`, `POST`, etc.) as needed.
+
+---
+
+## 🧱 Middleware
+
+Monpress supports global middleware using the `middleware()` helper. Useful for:
+
+- Authentication
+- Logging
+- Custom headers
+- Request preprocessing
+
+### 📌 Creating Middleware
+
+```ts
+import { middleware } from "monpress";
+
+export const authMiddleware = middleware((req, res, next) => {
+  if (req.path.startsWith("/auth")) {
+    req.user = {
+      id: "1",
+      name: "Sourav",
+    };
+  }
+  next();
+});
+```
+
+---
+
+### 🔗 Registering Middleware
+
+Add middleware when initializing your Monpress app:
+
+```ts
+import { MonPress } from "monpress";
+import { authMiddleware } from "./middlewares/auth";
+import routes from "./routes";
+
+const mon = MonPress({
+  routes,
+  middleware: [authMiddleware],
+  express(app, http) {
+    // Optional: custom Express logic here
+  },
+});
+```
+
+✅ All registered middleware is executed before your route handlers.
+
+---
+
+## 🔄 Example Workflow
 
 ```sh
 # Create a new project
 monpress create
 
-# Navigate to the project directory
+# Move into the project directory
 cd my-project
 
-# Start the development server
+# Start the dev server
 monpress dev
 
-# Generate routes
+# Generate route files
 monpress generate
 ```
 
-## Commands
+---
 
-### `monpress create`
+## 🛠 CLI Commands
 
-Creates a new Monpress project.
+| Command             | Description                        |
+| ------------------- | ---------------------------------- |
+| `monpress create`   | Create a new Monpress project      |
+| `monpress dev`      | Start the development server       |
+| `monpress generate` | Generate route mappings from files |
+| `monpress --help`   | Show CLI help and usage info       |
 
-### `monpress dev`
+---
 
-Starts the development server for your Monpress project.
+## 🤝 Contributing
 
-### `monpress generate`
+Want to contribute? Here's how:
 
-Generates the necessary routes for your Monpress project.
+1. Fork the repo
+2. Create a new branch
+3. Make your changes
+4. Submit a pull request
 
-## Help
+---
 
-For more information on how to use the Monpress CLI, you can run the following command:
+## 📄 License
 
-```sh
-monpress --help
-```
+Licensed under the **MIT License**.
 
-This will display the help information for the CLI tool.
+---
 
-## Contributing
+Happy coding with Monpress! ⚡  
+_File-based routing meets Express power._
 
-If you would like to contribute to the Monpress CLI, please follow these steps:
-
-1. Fork the repository.
-2. Create a new branch for your feature or bug fix.
-3. Make your changes.
-4. Submit a pull request.
-
-## License
-
-This project is licensed under the MIT License.
-
-Happy coding! 🎉
+---
