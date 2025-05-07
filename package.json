@@ -1,6 +1,6 @@
 {
   "name": "monpress",
-  "version": "0.1.2-stable",
+  "version": "1.0.0",
   "main": "dist/main.js",
   "types": "dist/main.d.ts",
   "type": "module",
@@ -14,12 +14,29 @@
     "express",
     "tool",
     "typescript",
-    "file based routing",
-    "monpress"
+    "file-based routing",
+    "monpress",
+    "backend",
+    "api",
+    "middleware",
+    "framework",
+    "typescript framework",
+    "routing framework",
+    "express framework",
+    "rest api",
+    "server-side",
+    "developer tools",
+    "web framework",
+    "node.js",
+    "nodejs"
   ],
-  "author": "sourav bapari",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/souravbapari1/mon"
+  },
+  "author": "Sourav Bapari",
   "license": "ISC",
-  "description": "express based file based routing framework for typescript",
+  "description": "An intuitive Express framework in TypeScript that leverages file-based routing and flexible middleware support to streamline backend development.",
   "dependencies": {
     "@types/express": "^5.0.0",
     "chalk": "^5.4.1",

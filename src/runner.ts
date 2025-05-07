@@ -5,6 +5,7 @@ import chokidar from "chokidar";
 import fs from "fs";
 import path from "path";
 
+
 const routesPath = path.join(process.cwd(), "src", "routes");
 const importRoot = "@/src/routes";
 const ROUTE_METHODS = ["get", "post", "put", "patch", "delete"];
@@ -175,8 +176,11 @@ export const makeRoutes = async () => {
 };
 
 export const runner = async () => {
-  // Watch for file changes in the current directory
   console.clear();
+  const regenerateRoutes = async () => {
+    await makeRoutes();
+  };
+
   chokidar
     .watch(path.join(process.cwd(), "src", "routes"), {
       ignored: (filePath) => /node_modules|\.git|\/_.*/.test(filePath),
@@ -186,25 +190,27 @@ export const runner = async () => {
       const name = file.split(path.sep).reverse()?.[0] || "";
       if (name != "routes.d.ts") {
         console.log(`File changed: ${name}. Restarting server...`);
-        await makeRoutes();
+        regenerateRoutes();
       }
     })
     .on("unlink", async (file) => {
       const name = file.split(path.sep).reverse()?.[0] || "";
       console.log(`File deleted: ${name}. Regenerating routes...`);
-      await makeRoutes();
-    });
-
-  // Correctly spawn the npm start command
-  makeRoutes()
-    .then(() => {
-      const isWin = process.platform === "win32";
-      const cmd = isWin ? "npm.cmd" : "npm";
-      const args = ["run", "watch:dev"];
-
-      spawn(cmd, args, { stdio: "inherit", shell: true });
+      regenerateRoutes();
     })
-    .catch((err) => {
-      console.error(err);
+    .on("error", (error) => {
+      console.error("Chokidar error:", error);
     });
+
+  // Initial route generation and start the server
+  try {
+    await makeRoutes();
+    const isWin = process.platform === "win32";
+    const cmd = isWin ? "npm.cmd" : "npm";
+    const args = ["run", "watch:dev"];
+
+    spawn(cmd, args, { stdio: "inherit", shell: true });
+  } catch (err) {
+    console.error(err);
+  }
 };
