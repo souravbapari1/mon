@@ -1,20 +1,18 @@
-# Monpress
+---
+# Monpress CLI
 
-Welcome to **Monpress**! A powerful, flexible tool that streamlines Express-based project development with:
-
-- ✅ **File-based routing**
-- ✅ **Built-in REST method handlers**
-- ✅ **Global and custom middleware support**
-- ✅ **Fast and flexible development experience**
-- ✅ **Type-safe middleware chaining** (with support for async validation, error handling, and more)
-
+Welcome to the **Monpress CLI**! This tool helps you create and manage Express-based Monpress projects with:
+  - ✅ File-based routing
+  - ✅ Built-in REST method handlers
+  - ✅ Global middleware support
+  - ✅ Fast and flexible development experience
 ---
 
 ## 📦 Installation
 
 Make sure you have [Node.js](https://nodejs.org/) installed.
 
-Install Monpress globally via npm:
+Install Monpress CLI globally via npm:
 
 ```sh
 npm install -g monpress
@@ -24,7 +22,7 @@ npm install -g monpress
 
 ## 🚀 Usage
 
-Monpress includes several commands to streamline your workflow:
+The Monpress CLI includes several commands to streamline your workflow:
 
 ### 🔧 Create a New Project
 
@@ -127,26 +125,10 @@ export const authMiddleware = middleware((req, res, next) => {
   if (req.path.startsWith("/auth")) {
     req.user = {
       id: "1",
-      name: "Sourav Bapari",
+      name: "Sourav",
     };
   }
   next();
-});
-```
-
-### 📌 Middleware with Async Support
-
-```ts
-import { middleware } from "monpress";
-
-export const asyncMiddleware = middleware(async (req, res, next) => {
-  try {
-    const user = await getUserFromDb(req.headers["user-id"]);
-    req.user = user;
-    next();
-  } catch (error) {
-    next(error);
-  }
 });
 ```
 
@@ -158,12 +140,12 @@ Add middleware when initializing your Monpress app:
 
 ```ts
 import { MonPress } from "monpress";
-import { authMiddleware, asyncMiddleware } from "./middlewares/auth";
+import { authMiddleware } from "./middlewares/auth";
 import routes from "./routes";
 
 const mon = MonPress({
   routes,
-  middleware: [authMiddleware, asyncMiddleware],
+  middleware: [authMiddleware],
   express(app, http) {
     // Optional: custom Express logic here
   },
@@ -174,65 +156,87 @@ const mon = MonPress({
 
 ---
 
-## 🧩 Middleware Chaining with `httpRequest`
-
-Monpress allows you to chain multiple middlewares and HTTP method handlers, using the `httpRequest` helper to ensure smooth and type-safe handling of requests.
-
-### 📌 Chaining Middleware and Handlers
-
-You can chain middlewares and HTTP request handlers in a single flow:
-
-```ts
-import { httpRequest } from "monpress";
-import { authMiddleware, loggingMiddleware } from "./middlewares";
-
-// Define a handler with middleware chaining
-export const GET = httpRequest(async (req, res) => {
-  res.json({ message: "GET request with middleware chaining" });
-})
-  .middleware(authMiddleware) // First middleware
-  .middleware(loggingMiddleware); // Second middleware
-```
-
-In the example above:
-
-- `authMiddleware` runs first, followed by `loggingMiddleware`, before the final HTTP request handler (`GET`) executes.
-
-This approach allows you to define clean, reusable, and type-safe middleware chains, making your application more modular and easier to maintain.
-
 ---
 
-## 🧩 `httpRequest` Helper and Types
+## 📁 File Uploading with Multer
 
-The `httpRequest` helper helps you define request handlers in a type-safe way, while also allowing middleware chaining.
+Monpress supports file uploading using the popular `multer` middleware. Here's how you can integrate it into your Monpress application:
 
-### 📌 Usage
+### 📦 Installation
+
+First, install `multer`:
+
+```sh
+npm install multer
+```
+
+### ⚙️ Configuration
+
+Create a file, for example, `routes/upload.ts`, to handle file uploads. Here's an example of how to configure `multer` and create a route:
 
 ```ts
 import { httpRequest } from "monpress";
-import { z } from "zod";
+import multer from "multer";
+import path from "path";
 
-// Example route handler with Zod validation for request body
-const createUserSchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  age: z.number().min(18, "Age must be at least 18"),
+// Configure storage for uploaded files
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "uploads/"); // Folder to store uploaded files
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    cb(null, uniqueSuffix + path.extname(file.originalname)); // e.g., 1624567890-123456789.jpg
+  },
 });
 
-export const POST = httpRequest(async (req, res) => {
-  createUserSchema.parse(req.body); // Validate request body
+// Create the multer upload instance
+const upload = multer({ storage: storage });
 
-  // Proceed with logic after validation
-  res.json({ message: "User created successfully" });
-})
-  .middleware(authMiddleware) // Add middleware before handler
-  .middleware(loggingMiddleware); // Add another middleware
+// Example POST request handler with file upload
+export const POST = httpRequest(async (req, res) => {
+  upload.any()(req, res, async (err: any) => {
+    if (err) {
+      return res.status(500).json({ message: "Error uploading file" });
+    }
+    // Files are available in req.files, and other form data in req.body
+    res.json({ files: req.files, body: req.body });
+  });
+});
 ```
 
-In the above code:
+### 📍 Route Definition
 
-1. The `POST` handler is first associated with middleware (`authMiddleware` and `loggingMiddleware`).
-2. The request body is validated using **Zod** before any further logic is executed.
-3. Type safety is ensured throughout the chain.
+In this example, the `POST` route uses `upload.any()` to handle any number of files. You can also use `upload.single('fieldName')` to handle a single file or `upload.array('fieldName', maxCount)` to handle a specific number of files.
+
+### 🧪 Testing the Upload
+
+You can test this endpoint using `curl`:
+
+```sh
+curl -X POST -F "file=@/path/to/your/file.jpg" http://localhost:3000/upload
+```
+
+Make sure to replace `/path/to/your/file.jpg` with the actual path to your file.
+
+### ⚠️ Error Handling
+
+It's important to handle errors that may occur during the file upload process. In the example above, any error during the upload will result in a 500 status code with an error message.
+
+### 🧱 Middleware Usage
+
+You can also use multer as middleware for specific routes:
+
+```ts
+import { httpRequest } from "monpress";
+import { upload } from "./upload"; // Import the multer instance
+
+export const PATCH = httpRequest(async (req, res) => {
+  res.json({ message: "PATCH request successful" });
+}).middleware(upload.single("file"));
+```
+
+In this case, the `upload.single('file')` middleware is applied only to the `PATCH` route.
 
 ---
 
@@ -254,14 +258,14 @@ monpress generate
 
 ---
 
-## 🛠 Commands
+## 🛠 CLI Commands
 
 | Command             | Description                        |
 | ------------------- | ---------------------------------- |
 | `monpress create`   | Create a new Monpress project      |
 | `monpress dev`      | Start the development server       |
 | `monpress generate` | Generate route mappings from files |
-| `monpress --help`   | Show help and usage info           |
+| `monpress --help`   | Show CLI help and usage info       |
 
 ---
 
@@ -282,13 +286,7 @@ Licensed under the **MIT License**.
 
 ---
 
-Happy coding with Monpress! ⚡
+Happy coding with Monpress! ⚡  
 _File-based routing meets Express power._
 
 ---
-
-### Key Updates:
-
-1. **Middleware Chaining:** Demonstrated with multiple middlewares in sequence, allowing for cleaner and more modular code.
-2. **`httpRequest` Helper:** Shows how to use `httpRequest` to chain middleware, validate data, and handle requests in a type-safe way.
-3. **Zod Validation Example:** Added an example where Zod is used to validate the request body, before proceeding with the handler.
