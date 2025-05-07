@@ -156,8 +156,6 @@ const mon = MonPress({
 
 ---
 
----
-
 ## 📁 File Uploading with Multer
 
 Monpress supports file uploading using the popular `multer` middleware. Here's how you can integrate it into your Monpress application:
@@ -218,25 +216,6 @@ curl -X POST -F "file=@/path/to/your/file.jpg" http://localhost:3000/upload
 ```
 
 Make sure to replace `/path/to/your/file.jpg` with the actual path to your file.
-
-### ⚠️ Error Handling
-
-It's important to handle errors that may occur during the file upload process. In the example above, any error during the upload will result in a 500 status code with an error message.
-
-### 🧱 Middleware Usage
-
-You can also use multer as middleware for specific routes:
-
-```ts
-import { httpRequest } from "monpress";
-import { upload } from "./upload"; // Import the multer instance
-
-export const PATCH = httpRequest(async (req, res) => {
-  res.json({ message: "PATCH request successful" });
-}).middleware(upload.single("file"));
-```
-
-In this case, the `upload.single('file')` middleware is applied only to the `PATCH` route.
 
 ---
 
