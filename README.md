@@ -1,7 +1,7 @@
 ---
-# Monpress CLI
+# Monpress
 
-Welcome to the **Monpress CLI**! This tool helps you create and manage Express-based Monpress projects with:
+Welcome to the **Monpress**! This tool helps you create and manage Express-based Monpress projects with:
   - ✅ File-based routing
   - ✅ Built-in REST method handlers
   - ✅ Global middleware support
@@ -12,7 +12,7 @@ Welcome to the **Monpress CLI**! This tool helps you create and manage Express-b
 
 Make sure you have [Node.js](https://nodejs.org/) installed.
 
-Install Monpress CLI globally via npm:
+Install Monpress globally via npm:
 
 ```sh
 npm install -g monpress
@@ -22,7 +22,7 @@ npm install -g monpress
 
 ## 🚀 Usage
 
-The Monpress CLI includes several commands to streamline your workflow:
+The Monpress includes several commands to streamline your workflow:
 
 ### 🔧 Create a New Project
 
@@ -237,14 +237,14 @@ monpress generate
 
 ---
 
-## 🛠 CLI Commands
+## 🛠 Commands
 
 | Command             | Description                        |
 | ------------------- | ---------------------------------- |
 | `monpress create`   | Create a new Monpress project      |
 | `monpress dev`      | Start the development server       |
 | `monpress generate` | Generate route mappings from files |
-| `monpress --help`   | Show CLI help and usage info       |
+| `monpress --help`   | Show help and usage info           |
 
 ---
 
